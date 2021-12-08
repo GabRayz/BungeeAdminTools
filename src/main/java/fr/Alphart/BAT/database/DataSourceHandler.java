@@ -1,6 +1,15 @@
 package fr.Alphart.BAT.database;
 
-import static java.lang.String.format;
+import com.google.common.base.Joiner;
+import com.google.common.base.Preconditions;
+import com.google.common.io.CharStreams;
+import com.mysql.jdbc.exceptions.jdbc4.CommunicationsException;
+import com.zaxxer.hikari.HikariDataSource;
+import fr.Alphart.BAT.BAT;
+import fr.Alphart.BAT.Utils.CallbackUtils.Callback;
+import net.md_5.bungee.api.ProxyServer;
+import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.varia.NullAppender;
 
 import java.io.File;
 import java.io.IOException;
@@ -10,27 +19,10 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.List;
-import java.util.TimeZone;
-import java.util.concurrent.TimeUnit;
+import java.util.*;
 import java.util.logging.Level;
 
-import com.zaxxer.hikari.HikariDataSource;
-import net.md_5.bungee.api.ProxyServer;
-
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.varia.NullAppender;
-
-import com.google.common.base.Joiner;
-import com.google.common.base.Preconditions;
-import com.google.common.io.CharStreams;
-import com.mysql.jdbc.exceptions.jdbc4.CommunicationsException;
-
-import fr.Alphart.BAT.BAT;
-import fr.Alphart.BAT.Utils.CallbackUtils.Callback;
+import static java.lang.String.format;
 
 public class DataSourceHandler {
 	// Connection informations
@@ -76,7 +68,7 @@ public class DataSourceHandler {
 		    int intOffset = Calendar.getInstance().getTimeZone().getOffset(Calendar.getInstance().getTimeInMillis()) / 1000;
 		    String offset = String.format("%02d:%02d", Math.abs(intOffset / 3600), Math.abs((intOffset / 60) % 60));
 		    offset = (intOffset >= 0 ? "+" : "-") + offset;
-			conn.createStatement().executeQuery("SET time_zone='" + offset + "';");
+			conn.createStatement().executeUpdate("SET time_zone='" + offset + "';");
 			conn.close();
 			BAT.getInstance().getLogger().config("BoneCP is loaded !");
 		} catch (final SQLException e) {
